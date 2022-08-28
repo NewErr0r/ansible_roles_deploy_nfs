@@ -1,0 +1,7 @@
+---
+- name: Deploy NFS Server on Alma Linux 
+  hosts: nfs
+  become: true 
+
+  roles:
+    - role-nfs-server

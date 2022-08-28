@@ -1,0 +1,36 @@
+---
+- name: NFS | Install packages nfs 
+  dnf: 
+    name: 
+      - nfs-utils 
+      - libnfsidmap
+    state: latest
+  notify: 
+    - Started and Enabled NFS
+
+- name: NFS | Create share directory
+  file: 
+    path: "{{ nfs_share_dir }}"
+    state: directory 
+    recurse: yes 
+    mode: "0777"
+
+- name: NFS | Create file exports
+  template: 
+    src: exports.j2
+    dest: /etc/exports
+
+- name: NFS | Run exports dir 
+  command: exportfs -rv 
+
+- name: NFS | Configure Firewalld 
+  firewalld: 
+    service: "{{ item }}"
+    permanent: yes 
+    state: enabled
+  loop:
+    - nfs
+    - rpc-bind
+    - mountd
+  notify: 
+    - Restarted Firewalld

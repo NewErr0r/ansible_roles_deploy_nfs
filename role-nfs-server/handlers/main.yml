@@ -1,0 +1,16 @@
+---
+- name: Started and Enabled NFS
+  service: 
+    name: "{{ item }}"
+    enabled: true 
+    state: started 
+  loop:
+    - rpcbind
+    - nfs-server
+    - rpc-statd 
+    - nfs-idmapd
+
+- name: Restarted Firewalld
+  service: 
+    name: firewalld 
+    state: restarted
